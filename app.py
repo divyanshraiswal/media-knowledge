@@ -5,20 +5,8 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from pinecone import Pinecone
 from langchain_groq import ChatGroq
 
-# Load environment variables
 load_dotenv()
-
-# Retrieve Pinecone API key from environment variables
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
-if PINECONE_API_KEY is None:
-    raise ValueError("PINECONE_API_KEY is not set. Please set the PINECONE_API_KEY in your environment variables.")
-
-# Function to authenticate the API key
-def authenticate_api_key(api_key):
-    if api_key != PINECONE_API_KEY:
-        return False
-    return True
-
 # Initialize Pinecone and Hugging Face embeddings
 pc = Pinecone(api_key=PINECONE_API_KEY)
 index = pc.Index("my-index")
