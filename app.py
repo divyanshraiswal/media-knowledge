@@ -8,11 +8,11 @@ from langchain_groq import ChatGroq
 # Load environment variables
 load_dotenv()
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
-if API_KEY is None:
-    raise ValueError("API key is not set. Please set the API key in your environment variables.")
+if PINECONE_API_KEY is None:
+    raise ValueError("PINECONE_API_KEY key is not set. Please set the PINECONE_API_KEY key in your environment variables.")
 
-def authenticate_api_key(api_key):
-    if api_key != API_KEY:
+def authenticate_api_key(pinecone_api_key):
+    if pinecone != PINECONE_API_KEY:
         return False
     return True
     
