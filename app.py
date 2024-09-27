@@ -8,7 +8,14 @@ from langchain_groq import ChatGroq
 # Load environment variables
 load_dotenv()
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
+if API_KEY is None:
+    raise ValueError("API key is not set. Please set the API key in your environment variables.")
 
+def authenticate_api_key(api_key):
+    if api_key != API_KEY:
+        return False
+    return True
+    
 # Initialize Pinecone and embeddings
 pc = Pinecone(api_key=PINECONE_API_KEY)
 index = pc.Index("my-index")
