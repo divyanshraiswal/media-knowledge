@@ -1,0 +1,1 @@
+Mediacal general knowledge using streamlit and using models from groq and data as medical encylopedia and vector database as Pinecone
