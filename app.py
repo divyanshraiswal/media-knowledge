@@ -7,37 +7,44 @@ from langchain_groq import ChatGroq
 
 # Load environment variables
 load_dotenv()
+
+# Retrieve Pinecone API key from environment variables
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
 if PINECONE_API_KEY is None:
-    raise ValueError("PINECONE_API_KEY key is not set. Please set the PINECONE_API_KEY key in your environment variables.")
+    raise ValueError("PINECONE_API_KEY is not set. Please set the PINECONE_API_KEY in your environment variables.")
 
-def authenticate_api_key(pinecone_api_key):
-    if pinecone != PINECONE_API_KEY:
+# Function to authenticate the API key
+def authenticate_api_key(api_key):
+    if api_key != PINECONE_API_KEY:
         return False
     return True
-    
-# Initialize Pinecone and embeddings
+
+# Initialize Pinecone and Hugging Face embeddings
 pc = Pinecone(api_key=PINECONE_API_KEY)
 index = pc.Index("my-index")
 embeddings = HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2', model_kwargs={'device': 'cpu'})
 
-# Streamlit app
-st.title(" :blue[HealthScope] ")
+# Streamlit app setup
+st.title(":blue[HealthScope]")
 st.header("Unlocking medical knowledge with AI")
 
+# Input for user query
 query = st.text_input("Enter your query")
 
 if query:
-    # Embed the query and retrieve unique document sources
+    # Embed the query using Hugging Face embeddings
     query_embedding = embeddings.embed_query(query)
+    
+    # Query the Pinecone index for the top 3 matching documents
     query_results = index.query(vector=query_embedding, top_k=3, include_metadata=True)
     
-    retrieved_docs = list({match['metadata']['source'] for match in query_results['matches']})[:3]  # Unique sources
-
-    # Prepare and invoke Groq
-    groq_chain = ChatGroq(model="llama3-8b-8192", temperature=1)  
+    # Retrieve unique document sources
+    retrieved_docs = list({match['metadata']['source'] for match in query_results['matches']})[:3]
+    
+    # Prepare and invoke Groq for generating the response
+    groq_chain = ChatGroq(model="llama3-8b-8192", temperature=1)
     groq_prompt = f"Use the following documents to answer the question: {query}. \nDocuments: {retrieved_docs}"
     groq_response = groq_chain.invoke(groq_prompt)
     
-    # Display the answer
+    # Display the AI-generated answer
     st.write(f"**Answer:** {groq_response.content}")
