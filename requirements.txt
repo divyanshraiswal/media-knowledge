@@ -1,0 +1,9 @@
+#dotenv
+langchain_community
+langchain
+langchain-huggingface
+pinecone
+pypdf
+streamlit
+langchain_groq 
+langchain-pinecone
